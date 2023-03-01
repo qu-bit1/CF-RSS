@@ -1,6 +1,7 @@
 package cfapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/qu-bit1/project_new/pkg/models"
 	"go.uber.org/zap"
@@ -28,10 +29,16 @@ func (cfClient *CodeforcesClient) RecentActions(maxCount int) ([]models.RecentAc
 		fmt.Println("error occurred while reading body")
 		return nil, err1
 	}
-	zap.S().Info(string(data))
+	//zap.S().Info(string(data))
 
 	// TODO- unmarshall the data into models.recentActions ( will make a wrapper struct for that)
-	return nil, nil
+	wrapper := struct {
+		Status string
+		Result []models.RecentAction
+	}{}
+
+	json.Unmarshal(data, &wrapper)
+	return wrapper.Result, err
 }
 
 // NewCodeforcesClient return an empty interface on which recent actions method can be applied
