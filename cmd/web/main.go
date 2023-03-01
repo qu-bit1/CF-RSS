@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/qu-bit1/project_new/pkg/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -29,6 +31,22 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Pinged the primary node of the cluster. You successfully connected to MongoDB!")
+
+	collection := client.Database("config").Collection("recent_actions")
+	filter := bson.M{
+		"blogEntry.rating": 69,
+	}
+	resp := collection.FindOne(context.TODO(), filter)
+	//if err1 != nil {
+	//	panic(err1)
+	//}
+	var rd models.RecentAction
+	err = resp.Decode(&rd)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(rd)
+
 }
 
 //func main() {
